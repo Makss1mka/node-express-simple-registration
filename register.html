@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <h1>Введите данные</h1>
+    <form id="registrationForm" action="/registration" method="post">
+        <p>
+          <label>Nickname</label><br>
+          <input type="text" name="username" /><br>
+          <label id="usernameLabel"></label>
+        </p>
+        <p>
+          <label>Password</label><br>
+          <input type="password" name="password" /><br>
+          <label id="passwordLabel"></label>
+        </p>
+        <input type="submit" value="Send" />
+        <label id="submitLabel"></label>
+    </form>
+
+
+<script>
+
+    const registrationForm = document.getElementById("registrationForm");
+    registrationForm.addEventListener("submit", async (e)=>{
+        e.preventDefault();
+
+        const username = registrationForm.username.value;
+        const password = registrationForm.password.value;
+    
+        const response = await fetch("/registration", { 
+                method: "POST", 
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({name: username, password: password})
+        });
+
+        let result = await response.text();
+        result = JSON.parse(result)
+        
+        if (result["username"] === true && result["password"] === true) {
+            document.getElementById("usernameLabel").innerHTML = document.getElementById("passwordLabel").innerHTML = ""
+            document.getElementById("submitLabel").innerHTML = "Account was successfuly created!"
+        }
+        if (result["username"] !== true) {
+            document.getElementById("usernameLabel").innerHTML = "This name is already taken!"
+        }
+        if (result["password"] !== true) {
+            document.getElementById("passwordLabel").innerHTML = "Password need to have numbers, special symbols, uppercase latters and lowercase letters!"
+        }
+    });
+    
+</script>
+
+
+</body>
+</html>
